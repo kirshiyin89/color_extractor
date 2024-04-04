@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dominant Colors Extractor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            margin-top: 50px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .upload-form {
+            margin-bottom: 50px;
+        }
+        #preview {
+            margin-bottom: 20px;
+        }
+        #preview img {
+            max-width: 500px;
+            max-height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        #color-preview {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .color-box {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+        .color-info {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+    <script>
+    function copyColor(rgb) {
+        const rgbNumbers = rgb.match(/\d+/g).join(' ');
+        const textarea = document.createElement('textarea');
+        textarea.value = rgbNumbers;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        const alertMessage = 'RGB values copied to clipboard: ' + rgbNumbers;
+        const alertTimeout = 2000; // Adjust the timeout as needed (in milliseconds)
+        const alertElement = document.createElement('div');
+        alertElement.classList.add('alert');
+        alertElement.textContent = alertMessage;
+        document.body.appendChild(alertElement);
+        setTimeout(() => {
+            document.body.removeChild(alertElement);
+        }, alertTimeout);
+    }
+    </script>
+</head>
+<body>
+    <h1>Dominant Colors Extractor</h1>
+    <div class="upload-form">
+        <form method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept=".png, .jpg, .jpeg">
+            <br><br>
+            <label for="num_colors">Number of Colors:</label>
+            <input type="number" id="num_colors" name="num_colors" value="{{ num_colors }}" min="1" max="20">
+            <br><br>
+            <input type="submit" value="Upload">
+        </form>
+    </div>
+    <div id="preview">
+        {% if preview_image %}
+            <img src="data:image/jpeg;base64,{{ preview_image }}" alt="Preview">
+        {% endif %}
+    </div>
+    {% if dominant_colors %}
+    <div id="color-preview">
+        {% for color in dominant_colors %}
+            <div class="color-box" style="background-color: rgb({{ color.0 }}, {{ color.1 }}, {{ color.2 }});" onclick="copyColor('rgb({{ color.0 }}, {{ color.1 }}, {{ color.2 }})')">
+                <div class="color-info">RGB: ({{ color.0 }}, {{ color.1 }}, {{ color.2 }})</div>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+</body>
+</html>
