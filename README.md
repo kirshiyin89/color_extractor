@@ -7,3 +7,17 @@ This is a web application that allows users to upload images and extract the dom
 * Extract the dominant colors from the uploaded images.
 * Choose the number of dominant colors to extract.
 * Copy RGB values to clipboard by clicking on them.
+
+## Usage
+Run python extractor.py
+
+Access the application in your web browser at http://localhost:5000.
+
+## Technologies Used
+Python,
+Flask,
+OpenCV,
+NumPy,
+HTML,
+CSS,
+JavaScript
